@@ -128,16 +128,18 @@ Logssaurus :: (inMessage : string, inData : *void, inInfo : Log_Info)
 			tag = "W";
 		}
 
-		#if DISPLAY_SECTION
+		#if DISPLAY_SECTION {
 			print_to_builder(*builder, " %", tag);
-		else
+		} else {
 			print_to_builder(*builder, "%", tag);
+		}
 	}
 
-	#ifx DISPLAY_SECTION || DISPLAY_TAGS
+	#if DISPLAY_SECTION || DISPLAY_TAGS {
 		append(*builder, ": %\n");
-	else
+	} else {
 		append(*builder, "%\n");
+	}
 
 	print_color(builder_to_string(*builder), inMessage, color = color, style = style, to_standard_error = is_error);
 }
