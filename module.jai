@@ -64,14 +64,18 @@ logW :: (inFormat : string, inArgs : .. Any) #expand
 // Error Log
 logE :: (inSection : LogSection, inFormat : string, inArgs : .. Any) #expand 
 {
-	#if LOG_LEVEL <= .ERROR
+	#if LOG_LEVEL <= .ERROR {
 		log(inFormat, args = inArgs, flags = .ERROR, section = *inSection.logSection);
+		print_stack_trace(context.stack_trace);
+	}
 }
 
 logE :: (inFormat : string, inArgs : .. Any) #expand 
 {
-	#if LOG_LEVEL <= .ERROR
+	#if LOG_LEVEL <= .ERROR {
 		log(inFormat, args = inArgs, flags = .ERROR);
+		print_stack_trace(context.stack_trace);
+	}
 }
 
 
