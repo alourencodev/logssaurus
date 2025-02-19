@@ -4,6 +4,13 @@
 #import "Math";
 #import "Print_Color";
 
+gLoggerData : struct
+{
+	logFilters : [..] string;
+}
+
+
+
 #scope_export   	
                 	
 
@@ -31,7 +38,20 @@ LogSection :: struct ($inName : string)
 
 
 
-// Debug Log
+// Add filter section, so only the added sections are logged.
+logAddFilter :: (inFilter : string)
+{
+	array_add(*gLoggerData.logFilters, inFilter);
+}
+
+logAddFilter :: (inFilter : LogSection)
+{
+	array_add(*gLoggerData.logFilters, inFilter.logSection.name);
+}
+
+
+
+// Verbose Log
 logV :: (inSection : LogSection, inFormat : string, inArgs : .. Any) #expand 
 { 
 	#if LOG_LEVEL <= .VERBOSE
@@ -105,6 +125,17 @@ Logssaurus :: (inMessage : string, inData : *void, inInfo : Log_Info)
 
 	is_error : bool = xx (inInfo.common_flags & Log_Flags.ERROR);
 	is_warning : bool = xx (inInfo.common_flags & Log_Flags.WARNING);
+
+	filters := gLoggerData.logFilters;
+
+	if (filters.count > 0) && !is_error && !is_warning {
+		if (inInfo.section == null)
+			return;
+
+		found, _ := array_find(gLoggerData.logFilters, inInfo.section.name);
+		if !found
+			return;
+	}
 
 	#if DISPLAY_COLORS {
 		if is_error
