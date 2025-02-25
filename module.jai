@@ -55,13 +55,13 @@ logAddFilter :: (inFilter : LogSection)
 logV :: (inSection : LogSection, inFormat : string, inArgs : .. Any) #expand 
 { 
 	#if LOG_LEVEL <= .VERBOSE
-		log(inFormat, args = inArgs, flags = .VERBOSE_ONLY, section = *inSection.logSection);
+		log(inFormat, args = ..inArgs, flags = .VERBOSE_ONLY, section = *inSection.logSection);
 }
 
 logV :: (inFormat : string, inArgs : .. Any) #expand
 {
 	#if LOG_LEVEL <= .VERBOSE
-		log(inFormat, args = inArgs, flags = .VERBOSE_ONLY);
+		log(inFormat, args = ..inArgs, flags = .VERBOSE_ONLY);
 }
 
 
@@ -70,13 +70,13 @@ logV :: (inFormat : string, inArgs : .. Any) #expand
 logW :: (inSection : LogSection, inFormat : string, inArgs : .. Any) #expand 
 {
 	#if LOG_LEVEL <= .WARNING
-		log(inFormat, args = inArgs, flags = .WARNING, section = *inSection.logSection);
+		log(inFormat, args = ..inArgs, flags = .WARNING, section = *inSection.logSection);
 }
 
 logW :: (inFormat : string, inArgs : .. Any) #expand 
 {
 	#if LOG_LEVEL <= .WARNING
-		log(inFormat, args = inArgs, flags = .WARNING);
+		log(inFormat, args = ..inArgs, flags = .WARNING);
 }
 
 
@@ -85,7 +85,7 @@ logW :: (inFormat : string, inArgs : .. Any) #expand
 logE :: (inSection : LogSection, inFormat : string, inArgs : .. Any) #expand 
 {
 	#if LOG_LEVEL <= .ERROR {
-		log(inFormat, args = inArgs, flags = .ERROR, section = *inSection.logSection);
+		log(inFormat, args = ..inArgs, flags = .ERROR, section = *inSection.logSection);
 		print_stack_trace(context.stack_trace);
 	}
 }
@@ -93,7 +93,7 @@ logE :: (inSection : LogSection, inFormat : string, inArgs : .. Any) #expand
 logE :: (inFormat : string, inArgs : .. Any) #expand 
 {
 	#if LOG_LEVEL <= .ERROR {
-		log(inFormat, args = inArgs, flags = .ERROR);
+		log(inFormat, args = ..inArgs, flags = .ERROR);
 		print_stack_trace(context.stack_trace);
 	}
 }
@@ -104,13 +104,13 @@ logE :: (inFormat : string, inArgs : .. Any) #expand
 logC :: (inSection : LogSection, inFormat : string, inArgs : .. Any) #expand 
 {
 	#if LOG_LEVEL <= .ERROR
-		log(inFormat, args = inArgs, flags = .ERROR | .CONTENT, section = *inSection.logSection);
+		log(inFormat, args = ..inArgs, flags = .ERROR | .CONTENT, section = *inSection.logSection);
 }
 
 logC :: (inFormat : string, inArgs : .. Any) #expand 
 {
 	#if LOG_LEVEL <= .ERROR
-		log(inFormat, args = inArgs, flags = .ERROR | .CONTENT);
+		log(inFormat, args = ..inArgs, flags = .ERROR | .CONTENT);
 }
 
 

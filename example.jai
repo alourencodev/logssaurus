@@ -19,6 +19,10 @@ main :: ()
 {
 	context.logger = Logssaurus;
 
+	a := 1;
+	b := 2;
+	c := 3;
+
 	/* 
 		Uncomment so only the logs for SECOND_SECTION show up.
 		Errors and Warnings always show up.
@@ -30,4 +34,5 @@ main :: ()
 	logW(EXAMPLE_SECTION, "Warning example");
 	logE(EXAMPLE_SECTION, "Error example");
 	logV(SECOND_SECTION, "This logs in another section");
+	logV(SECOND_SECTION, "Multiple values % % %", a, b, c);
 }
