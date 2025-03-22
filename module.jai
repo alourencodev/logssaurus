@@ -157,14 +157,20 @@ Logssaurus :: (inMessage : string, inData : *void, inInfo : Log_Info)
 	}
 
 	#if DISPLAY_COLORS {
-		if is_debug
+		if is_debug {
 			color = Console_Color.HI_WHITE;
-		else if is_content
+		}
+		else if is_content {
 			color = Console_Color.CYAN;
-		else if is_error
+		}
+		else if is_error {
 			color = Console_Color.RED;
-		else if is_warning
+			style = Console_Style.BOLD;
+		}
+		else if is_warning {
 			color = Console_Color.YELLOW;
+			style = Console_Style.BOLD;
+		}
 	}
 
 	builder : String_Builder;
