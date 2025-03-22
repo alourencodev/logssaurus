@@ -23,9 +23,10 @@ gLoggerData : struct
 	LogLevel :: enum u8
 	{
 		VERBOSE :: 0;
-		WARNING :: 10;
-		ERROR 	:: 20;
-		NONE	:: U8_MAX;
+		DEBUG	:: 1;
+		WARNING :: 2;
+		ERROR 	:: 3;
+		NONE	:: 4;
 	}
 };
 
@@ -55,12 +56,27 @@ logAddFilter :: (inFilter : LogSection)
 logV :: (inSection : LogSection, inFormat : string, inArgs : .. Any) #expand 
 { 
 	#if LOG_LEVEL <= .VERBOSE
-		log(inFormat, args = ..inArgs, flags = .VERBOSE_ONLY, section = *inSection.logSection);
+		log(inFormat, args = ..inArgs, flags = .VERY_VERBOSE_ONLY, section = *inSection.logSection);
 }
 
 logV :: (inFormat : string, inArgs : .. Any) #expand
 {
 	#if LOG_LEVEL <= .VERBOSE
+		log(inFormat, args = ..inArgs, flags = .VERY_VERBOSE_ONLY);
+}
+
+
+
+// Debug Log
+logD :: (inSection : LogSection, inFormat : string, inArgs : .. Any) #expand 
+{ 
+	#if LOG_LEVEL <= .DEBUG
+		log(inFormat, args = ..inArgs, flags = .VERBOSE_ONLY, section = *inSection.logSection);
+}
+
+logD :: (inFormat : string, inArgs : .. Any) #expand
+{
+	#if LOG_LEVEL <= .DEBUG
 		log(inFormat, args = ..inArgs, flags = .VERBOSE_ONLY);
 }
 
@@ -123,6 +139,9 @@ Logssaurus :: (inMessage : string, inData : *void, inInfo : Log_Info)
 	color := Console_Color.WHITE;
 	style := Console_Style.NORMAL;
 
+	is_verbose : bool = xx (inInfo.common_flags & Log_Flags.VERY_VERBOSE_ONLY);
+	is_debug : bool = xx (inInfo.common_flags & Log_Flags.VERBOSE_ONLY);
+	is_content : bool = xx (inInfo.common_flags & Log_Flags.CONTENT);
 	is_error : bool = xx (inInfo.common_flags & Log_Flags.ERROR);
 	is_warning : bool = xx (inInfo.common_flags & Log_Flags.WARNING);
 
@@ -138,7 +157,11 @@ Logssaurus :: (inMessage : string, inData : *void, inInfo : Log_Info)
 	}
 
 	#if DISPLAY_COLORS {
-		if is_error
+		if is_debug
+			color = Console_Color.HI_WHITE;
+		else if is_content
+			color = Console_Color.CYAN;
+		else if is_error
 			color = Console_Color.RED;
 		else if is_warning
 			color = Console_Color.YELLOW;
@@ -155,7 +178,9 @@ Logssaurus :: (inMessage : string, inData : *void, inInfo : Log_Info)
 	#if DISPLAY_TAGS {
 		tag := "V";
 
-		if inInfo.common_flags & Log_Flags.CONTENT {
+		if is_debug {
+			tag = "D";
+		} else if is_content {
 			tag = "C";
 		} else if is_error {
 			tag = "E";
