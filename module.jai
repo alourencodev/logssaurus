@@ -7,6 +7,7 @@
 gLoggerData : struct
 {
 	logFilters : [..] string;
+	verbose := false;
 }
 
 
@@ -40,15 +41,18 @@ LogSection :: struct ($inName : string)
 
 
 // Add filter section, so only the added sections are logged.
-logAddFilter :: (inFilter : string)
+logAddFilter :: inline (inFilter : string)
 {
 	array_add(*gLoggerData.logFilters, inFilter);
 }
 
-logAddFilter :: (inFilter : LogSection)
+logAddFilter :: inline (inFilter : LogSection)
 {
 	array_add(*gLoggerData.logFilters, inFilter.logSection.name);
 }
+
+
+logSetVerbose :: inline () { gLoggerData.verbose = true; };
 
 
 
@@ -147,8 +151,17 @@ Logssaurus :: (inMessage : string, inData : *void, inInfo : Log_Info)
 
 	filters := gLoggerData.logFilters;
 
+	// Verbose only gets logged when verbose mode is enabled.
+	if is_verbose && !gLoggerData.verbose
+		return;
+
+	// Errors and Warnings will always be logged.
 	if !is_error && !is_warning {
-		if is_verbose || (filters.count > 0) {
+
+		// Check for filters
+		if (filters.count > 0) {
+
+			// Logs with no section won't be in the filters for sure.
 			if (inInfo.section == null)
 				return;
 
