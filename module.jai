@@ -147,13 +147,15 @@ Logssaurus :: (inMessage : string, inData : *void, inInfo : Log_Info)
 
 	filters := gLoggerData.logFilters;
 
-	if (filters.count > 0) && !is_error && !is_warning {
-		if (inInfo.section == null)
-			return;
+	if !is_error && !is_warning {
+		if is_verbose || (filters.count > 0) {
+			if (inInfo.section == null)
+				return;
 
-		found, _ := array_find(gLoggerData.logFilters, inInfo.section.name);
-		if !found
-			return;
+			found, _ := array_find(gLoggerData.logFilters, inInfo.section.name);
+			if !found
+				return;
+		}
 	}
 
 	#if DISPLAY_COLORS {
